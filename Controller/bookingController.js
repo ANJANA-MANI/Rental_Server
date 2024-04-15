@@ -1,7 +1,6 @@
 const Booking = require('../Model/bookingSchema')
 const Listing=require('../Model/listingSchema');
 const user = require('../Model/userSchema');
-const {v4:uuidv4}=require("uuid");
 const stripe=require("stripe")(process.env.STRIPE_SECRET_KEY)
 exports.booking = async (req, res) => {
 
@@ -91,10 +90,8 @@ exports.payment = async (req, res) => {
     
     console.log('Inside payment controller');
     const{products}=req.body
-   
     console.log('Products',products);
     const lineItems=products.map((product)=>({
-
         price_data:{
             currency:"inr",
             product_data:{
