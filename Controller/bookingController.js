@@ -104,8 +104,8 @@ exports.payment = async (req, res) => {
     payment_method_types:["card"],
     line_items:lineItems,
     mode:"payment",
-    success_url:`/Payment/Completed`,
-    cancel_url:`/Payment/Failed`
+    success_url:`http://localhost:3000/Payment/Completed`,
+    cancel_url:"http://localhost:3000/Payment/Failed"
     })
      res.json(({id:session}))
 }
