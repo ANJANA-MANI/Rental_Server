@@ -86,8 +86,6 @@ console.log(error);
     }
 }
 exports.payment = async (req, res) => {
-
-    
     console.log('Inside payment controller');
     const{products}=req.body
     console.log('Products',products);
@@ -101,13 +99,13 @@ exports.payment = async (req, res) => {
         },
         quantity:1
     }))
-    
+    //const stripe=require("stripe")(process.env.STRIPE_SECRET_KEY)
     const session=await stripe.checkout.sessions.create({
     payment_method_types:["card"],
     line_items:lineItems,
     mode:"payment",
-    success_url:"http://localhost:3000/Payment/Completed",
-    cancel_url:"http://localhost:3000/Payment/Failed"
+    success_url:`/Payment/Completed`,
+    cancel_url:`/Payment/Failed`
     })
      res.json(({id:session}))
 }
