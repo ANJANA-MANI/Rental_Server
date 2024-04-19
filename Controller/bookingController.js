@@ -6,7 +6,7 @@ exports.booking = async (req, res) => {
 
     try {
 
-        console.log('Inside booking controller', req.body);
+        console.log('Inside booking controller fun..', req.body);
         const { customerId, hostId, listingId, startDate, endDate, totalPrice } = req.body
         const newBooking = new Booking({
 
