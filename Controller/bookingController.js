@@ -86,7 +86,7 @@ console.log(error);
     }
 }
 exports.payment = async (req, res) => {
-    console.log('Inside payment controller');
+    console.log('Inside payment stripe..');
     const{products}=req.body
     console.log('Products',products);
     const lineItems=products.map((product)=>({
