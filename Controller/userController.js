@@ -28,14 +28,14 @@ res.status(200).json(newUser)
 }
 }
 exports.login=async(req,res)=>{
-  console.log('requestbody:',req.body);
+ // console.log('requestbody:',req.body);
   const{email,password}=req.body;
-  console.log('inside login controller function');
+  //console.log('inside login controller function');
   try {
   const existingUser=await users.findOne({email:email,password:password})
   if(existingUser)
   {
-  console.log(existingUser._id);
+  //console.log(existingUser._id);
   const token=jwt.sign({userId:existingUser._id},"secret123")
   res.status(202).json({existingUser,token})
   }

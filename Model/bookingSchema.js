@@ -28,6 +28,16 @@ const BookingSchema=new mongoose.Schema(
         totalPrice:{
             type:Number,
             required:true
+        },
+        payment:{
+            type:Boolean,
+            required:true,
+            default:false
+        },
+        checkout:{
+            type:Boolean,
+            required:true,
+            default:false
         }
     },
     {timestamps:true}

@@ -6,7 +6,7 @@ exports.booking = async (req, res) => {
 
     try {
 
-        console.log('Inside booking controller fun..', req.body);
+        //console.log('Inside booking controller fun..', req.body);
         const { customerId, hostId, listingId, startDate, endDate, totalPrice } = req.body
         const newBooking = new Booking({
 
@@ -27,10 +27,10 @@ exports.trips = async (req, res) => {
 
         const { customerId } = req.params
         //console.log(req.params);
-        console.log('selecting........');
+        //console.log('selecting........');
         const trips = await Booking.find({ customerId: customerId }).populate("customerId hostId listingId")
         res.status(200).json(trips)
-        console.log('Trips', trips);
+        //console.log('Trips', trips);
       
     } catch (error) {
 console.log(error);
@@ -44,7 +44,7 @@ try {
     const{userId,listingId}=req.params
     const User=await user.findById(userId)
     const listing=await Listing.findById(listingId)
-    console.log('Inside wishlistinggg');
+    //console.log('Inside wishlistinggg');
     //console.log('User',User);
     //console.log('Listing',listing);
  const favouriteListing=User.Wishlist.find((item)=>item._id.toString()===listingId)
@@ -76,19 +76,19 @@ exports.bookings = async (req, res) => {
 
         const { userId } = req.params
         //console.log(req.params);
-        console.log('selecting........');
+        //console.log('selecting........');
         const reservation = await Booking.find({ hostId:userId }).populate("customerId hostId listingId")
         res.status(200).json(reservation)
       
     } catch (error) {
-console.log(error);
+//console.log(error);
         res.status(404).json({message:"Can't find bookings"})
     }
 }
 exports.payment = async (req, res) => {
-    console.log('Inside payment stripe..');
+   // console.log('Inside payment stripe..');
     const{products}=req.body
-    console.log('Products',products);
+    //console.log('Products',products);
     const lineItems=products.map((product)=>({
         price_data:{
             currency:"inr",
@@ -99,13 +99,66 @@ exports.payment = async (req, res) => {
         },
         quantity:1
     }))
-    //const stripe=require("stripe")(process.env.STRIPE_SECRET_KEY)
+    const stripe=require("stripe")(process.env.STRIPE_SECRET_KEY)
     const session=await stripe.checkout.sessions.create({
     payment_method_types:["card"],
     line_items:lineItems,
     mode:"payment",
-    success_url:`https://rental-nest.netlify.app/Payment/Completed`,
-    cancel_url:"https://rental-nest.netlify.app/Payment/Failed"
+    success_url:`http://localhost:3000/Payment/Completed/${products[0].id}`,
+    cancel_url:"http://localhost:3000/Payment/Failed"
     })
      res.json(({id:session}))
 }
+exports.payment_status = async (req, res) => {
+
+    try {
+
+        const { listingId } = req.params
+       // console.log(req.params);
+        //console.log('payinggg.....');
+        const updatePayment=await Booking.findByIdAndUpdate({_id:listingId},{
+           payment:true},{new:true}
+           )
+    await updatePayment.save();
+    const associatedListingId = updatePayment.listingId;
+    //change booking status to true
+    const updateBookingstatus=await Listing.findByIdAndUpdate({_id:associatedListingId},{
+        bookingstatus:false},{new:true}
+        )
+       // console.log(updateBookingstatus);
+        
+      
+    } catch (error) {
+//console.log(error);
+        res.status(404).json({message:"Can't find bookings"})
+    }
+}
+exports.cancel_booking = async (req,res) => {
+    try {
+        //console.log('Inside cancel booking controller fun..');
+        const bookingId = req.params.id;
+        const deletedBooking = await Booking.findByIdAndDelete(bookingId);
+        return res.status(200).json({ message: 'Booking deleted successfully' });
+
+    } catch (error) {
+        res.status(400).json('Request Failed', error)
+    }
+
+}
+exports.checkoutstatus= async (req,res) => {
+    try {
+        //console.log('Inside cancel booking controller fun..');
+        const bookingId = req.params.id;
+        console.log(bookingId);
+        
+        const checkout = await Booking.findByIdAndUpdate({_id:bookingId},{checkout:true});
+        console.log(checkout);
+        
+        return res.status(200).json({ message: 'status updated' });
+
+    } catch (error) {
+        res.status(400).json('Request Failed', error)
+    }
+
+}
+

@@ -80,6 +80,10 @@ const listingSchema=new mongoose.Schema(
             type:Number,
             required:true
         },
+        bookingstatus:{
+            type:Boolean,
+            default:true
+        }
     
     },{
         timestamps:true
