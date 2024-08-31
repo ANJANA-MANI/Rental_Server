@@ -104,8 +104,8 @@ exports.payment = async (req, res) => {
     payment_method_types:["card"],
     line_items:lineItems,
     mode:"payment",
-   success_url: `https://rentalnest.netlify.app/Payment/Completed/${products[0].id}`,
-    cancel_url: "https://rentalnest.netlify.app/Payment/Failed"
+   success_url: `/Payment/Completed/${products[0].id}`,
+    cancel_url: "/Payment/Failed"
     })
      res.json(({id:session}))
 }
